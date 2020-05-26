@@ -1,6 +1,10 @@
 import { Fish, Bubble } from './fish'
 import { ContactText } from './contactText'
 
+export const contactController = {
+  hovering: false,
+}
+
 const SketchContact = (p5) => {
   let krakenBody
   let coral = {}
@@ -197,10 +201,15 @@ const SketchContact = (p5) => {
             )
           )
         }
-        console.log(bubbles)
       } else {
         treasureState = 'closed'
       }
+    }
+    if (contactController.hovering === 'linkedin') {
+      window.open('https://www.linkedin.com/in/robert-fox-1b341996/')
+    }
+    if (contactController.hovering === 'github') {
+      window.open('https://www.github.com/robertjfox')
     }
   }
 }

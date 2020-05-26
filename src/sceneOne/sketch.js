@@ -18,6 +18,7 @@ const Sketch = (p5) => {
 
   p5.draw = () => {
     p5.clear()
+
     for (let i = 0; i < dots.length; i++) {
       let dot = dots[i]
       if (checkIfCenter(dot)) {
@@ -45,6 +46,14 @@ const Sketch = (p5) => {
         s1controller.toggle()
         clearInterval(interval01)
       }, 10000)
+    }
+
+    if (eyeball.size > 240 && growing) {
+      p5.push()
+      p5.textSize(p5.width / 30)
+      p5.translate((p5.width / 2) * -0.125, 0)
+      p5.text('Click Me!', p5.width / 2, (p5.height / 2) * 1.5)
+      p5.pop()
     }
   }
 

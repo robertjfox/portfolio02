@@ -1,16 +1,17 @@
 export class Hand {
-  constructor(file, x, y) {
+  constructor(file, x, y, size) {
     this.file = file
     this.x = x
     this.y = y
     this.w = 0
     this.h = 0
+    this.size = size
     this.bounce = 0
     this.dir = 'down'
   }
 
   update(p5) {
-    if (this.h < p5.height / 3.5) {
+    if (this.h < this.size) {
       this.h += 8
       this.w += 4
     } else {

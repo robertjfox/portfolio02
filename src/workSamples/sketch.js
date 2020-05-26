@@ -18,6 +18,14 @@ export const waterHeight = {
   },
 }
 
+const projectText = {
+  fitminded:
+    'FitMinded is a social media application that connects individuals with similar athletic interests.',
+  revyou: 'RevYou is a productivity app for creating and maintaining habits.',
+  youtuba: 'YouTuba is an ecommerce platform for selling musical intruments',
+  geometry: 'Geometry Wars is a browser game inspired by a childhood favorite.',
+}
+
 export const workDistanceController = {
   kraken: Infinity,
   faucet: null,
@@ -33,94 +41,36 @@ const SketchWork = (p5) => {
   let text = []
   let typewriterFont
   let clouds = []
+  let cloudFiles = {}
   let currentWindow = null
   let projectImages = {}
   let kraken
-  let krakenImages
+  let krakenImages = []
   let krakenOn = false
   let krakenClicked = false
+  let mobile = false
+  if (window.innerWidth <= 600) {
+    mobile = true
+  }
 
   p5.setup = () => {
+    let cloudDenom = 1
+    if (mobile) {
+      cloudDenom = 2
+    }
     p5.createCanvas(window.innerWidth, window.innerHeight)
-    tide = new Tide([67, 69, 92], [137, 144, 172], p5)
     faucet = p5.loadImage(`${process.env.PUBLIC_URL}/faucet.png`)
     typewriterFont = p5.loadFont(`${process.env.PUBLIC_URL}/typewriterFont.ttf`)
-    text = [
-      new AboutText(
-        'WORK SAMPLES:',
-        p5.width / 8,
-        (p5.height / 10) * 2,
-        p5.width / 30,
-        [255, 255, 255],
-        typewriterFont,
-        0,
-        false
-      ),
-      new AboutText(
-        ' - REVYOU',
-        p5.width / 7,
-        (p5.height / 10) * 3.5,
-        p5.width / 40,
-        [255, 255, 255],
-        typewriterFont,
-        -25,
-        true
-      ),
-      new AboutText(
-        ' - FITMINDED',
-        p5.width / 7,
-        (p5.height / 10) * 4.5,
-        p5.width / 40,
-        [255, 255, 255],
-        typewriterFont,
-        -50,
-        true
-      ),
-      new AboutText(
-        ' - YOUTUBA',
-        p5.width / 7,
-        (p5.height / 10) * 5.5,
-        p5.width / 40,
-        [46, 48, 71],
-        typewriterFont,
-        -75,
-        true
-      ),
-      new AboutText(
-        ' - GEOMETRY WARS',
-        p5.width / 7,
-        (p5.height / 10) * 6.5,
-        p5.width / 40,
-        [46, 48, 71],
-        typewriterFont,
-        -100,
-        true
-      ),
-    ]
-    const cloud01 = p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud01.png`)
-    const cloud02 = p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud02.png`)
-    const cloud03 = p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud03.png`)
-    const cloud04 = p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud04.png`)
-    const cloud05 = p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud05.png`)
-    const cloud06 = p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud06.png`)
-    const cloud07 = p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud07.png`)
-    const cloud08 = p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud08.png`)
-    clouds = [
-      new Cloud(cloud01, 100, p5.height / 6, 260, 85, 1),
-      new Cloud(cloud01, p5.width * 0.66, 0, 340, 120, 0.9),
-      new Cloud(cloud02, p5.width / 2, (p5.height / 6) * 1.5, 150, 40, 0.5),
-      new Cloud(cloud03, p5.width / 3, (p5.height / 6) * 2, 210, 70, 0.9),
-      new Cloud(cloud04, p5.width / 4, p5.height / 15, 210, 70, 0.8),
-      new Cloud(cloud04, p5.width - 100, p5.height / 4, 240, 90, 0.6),
-      new Cloud(cloud05, p5.width / 2.5, (p5.height / 6) * 1.7, 100, 33, 0.3),
-      new Cloud(cloud06, p5.width / 10, (p5.height / 6) * 2.2, 100, 33, 0.4),
-      new Cloud(cloud07, p5.width / 1.7, (p5.height / 6) * 2.4, 110, 40, 0.6),
-      new Cloud(cloud08, 0, p5.height / 8, 80, 25, 0.5),
-      new Cloud(cloud08, p5.width * 0.75, p5.height / 4, 100, 33, 0.2),
-    ]
-    projectImages.fitminded = p5.loadImage(
-      `${process.env.PUBLIC_URL}/workSamples/fitminded.png`
-    )
+    cloudFiles = {
+      one: p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud01.png`),
+      two: p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud02.png`),
+      three: p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud03.png`),
+      four: p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud04.png`),
+      five: p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud05.png`),
+      six: p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud06.png`),
+      seven: p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud07.png`),
+      eight: p5.loadImage(`${process.env.PUBLIC_URL}/clouds/cloud08.png`),
+    }
     krakenImages = [
       p5.loadImage(`${process.env.PUBLIC_URL}/kraken/0.png`),
       p5.loadImage(`${process.env.PUBLIC_URL}/kraken/1.png`),
@@ -129,7 +79,228 @@ const SketchWork = (p5) => {
       p5.loadImage(`${process.env.PUBLIC_URL}/kraken/4.png`),
       p5.loadImage(`${process.env.PUBLIC_URL}/kraken/5.png`),
     ]
-    kraken = new Kraken(p5, krakenImages)
+    clouds = [
+      new Cloud(
+        cloudFiles.one,
+        100,
+        p5.height / 6,
+        260 / cloudDenom,
+        85 / cloudDenom,
+        1 / cloudDenom
+      ),
+      new Cloud(
+        cloudFiles.one,
+        p5.width * 0.66,
+        0,
+        340 / cloudDenom,
+        120 / cloudDenom,
+        0.9 / cloudDenom
+      ),
+      new Cloud(
+        cloudFiles.two,
+        p5.width / 2,
+        (p5.height / 6) * 1.5,
+        150 / cloudDenom,
+        40 / cloudDenom,
+        0.5 / cloudDenom
+      ),
+      new Cloud(
+        cloudFiles.three,
+        p5.width / 3,
+        (p5.height / 6) * 2,
+        210 / cloudDenom,
+        70 / cloudDenom,
+        0.9 / cloudDenom
+      ),
+      new Cloud(
+        cloudFiles.four,
+        p5.width / 4,
+        p5.height / 15,
+        210 / cloudDenom,
+        70 / cloudDenom,
+        0.8 / cloudDenom
+      ),
+      new Cloud(
+        cloudFiles.four,
+        p5.width - 100,
+        p5.height / 4,
+        240 / cloudDenom,
+        90 / cloudDenom,
+        0.6 / cloudDenom
+      ),
+      new Cloud(
+        cloudFiles.five,
+        p5.width / 2.5,
+        (p5.height / 6) * 1.7,
+        100 / cloudDenom,
+        33 / cloudDenom,
+        0.3 / cloudDenom
+      ),
+      new Cloud(
+        cloudFiles.six,
+        p5.width / 10,
+        (p5.height / 6) * 2.2,
+        100 / cloudDenom,
+        33 / cloudDenom,
+        0.4 / cloudDenom
+      ),
+      new Cloud(
+        cloudFiles.seven,
+        p5.width / 1.7,
+        (p5.height / 6) * 2.4,
+        110 / cloudDenom,
+        40 / cloudDenom,
+        0.6 / cloudDenom
+      ),
+      new Cloud(
+        cloudFiles.eight,
+        0,
+        p5.height / 8,
+        80 / cloudDenom,
+        25 / cloudDenom,
+        0.5 / cloudDenom
+      ),
+      new Cloud(
+        cloudFiles.eight,
+        p5.width * 0.75,
+        p5.height / 4,
+        100 / cloudDenom,
+        33 / cloudDenom,
+        0.2 / cloudDenom
+      ),
+    ]
+    if (mobile) {
+      tide = new Tide([67, 69, 92], [137, 144, 172], p5)
+      text = [
+        new AboutText(
+          'WORK SAMPLES:',
+          p5.width / 8,
+          p5.height * 0.08,
+          p5.width / 12,
+          [255, 255, 255],
+          typewriterFont,
+          0,
+          false
+        ),
+        new AboutText(
+          ' - REVYOU',
+          p5.width / 8,
+          p5.height * 0.18,
+          p5.width / 15,
+          [255, 255, 255],
+          typewriterFont,
+          -25,
+          true
+        ),
+        new AboutText(
+          ' - FITMINDED',
+          p5.width / 8,
+          p5.height * 0.24,
+          p5.width / 15,
+          [255, 255, 255],
+          typewriterFont,
+          -50,
+          true
+        ),
+        new AboutText(
+          ' - YOUTUBA',
+          p5.width / 8,
+          p5.height * 0.3,
+          p5.width / 15,
+          [255, 255, 255],
+          typewriterFont,
+          -75,
+          true
+        ),
+        new AboutText(
+          ' - GEOMETRY WARS',
+          p5.width / 8,
+          p5.height * 0.36,
+          p5.width / 15,
+          [255, 255, 255],
+          typewriterFont,
+          -100,
+          true
+        ),
+      ]
+      projectImages.fitminded = p5.loadImage(
+        `${process.env.PUBLIC_URL}/workSamples/fitminded.png`
+      )
+
+      kraken = new Kraken(p5, krakenImages)
+    } else {
+      tide = new Tide([67, 69, 92], [137, 144, 172], p5)
+      faucet = p5.loadImage(`${process.env.PUBLIC_URL}/faucet.png`)
+      typewriterFont = p5.loadFont(
+        `${process.env.PUBLIC_URL}/typewriterFont.ttf`
+      )
+      text = [
+        new AboutText(
+          'WORK SAMPLES:',
+          p5.width / 8,
+          (p5.height / 10) * 2,
+          p5.width / 30,
+          [255, 255, 255],
+          typewriterFont,
+          0,
+          false
+        ),
+        new AboutText(
+          ' - REVYOU',
+          p5.width / 7,
+          (p5.height / 10) * 3.5,
+          p5.width / 40,
+          [255, 255, 255],
+          typewriterFont,
+          -25,
+          true
+        ),
+        new AboutText(
+          ' - FITMINDED',
+          p5.width / 7,
+          (p5.height / 10) * 4.5,
+          p5.width / 40,
+          [255, 255, 255],
+          typewriterFont,
+          -50,
+          true
+        ),
+        new AboutText(
+          ' - YOUTUBA',
+          p5.width / 7,
+          (p5.height / 10) * 5.5,
+          p5.width / 40,
+          [46, 48, 71],
+          typewriterFont,
+          -75,
+          true
+        ),
+        new AboutText(
+          ' - GEOMETRY WARS',
+          p5.width / 7,
+          (p5.height / 10) * 6.5,
+          p5.width / 40,
+          [46, 48, 71],
+          typewriterFont,
+          -100,
+          true
+        ),
+      ]
+
+      projectImages.fitminded = p5.loadImage(
+        `${process.env.PUBLIC_URL}/workSamples/fitminded.png`
+      )
+      projectImages.revyou = p5.loadImage(
+        `${process.env.PUBLIC_URL}/workSamples/revyou.png`
+      )
+      projectImages.youtuba = p5.loadImage(
+        `${process.env.PUBLIC_URL}/workSamples/youtuba.png`
+      )
+      projectImages.geometry = p5.loadImage(
+        `${process.env.PUBLIC_URL}/workSamples/geometry.png`
+      )
+      kraken = new Kraken(p5, krakenImages)
+    }
   }
 
   p5.draw = () => {
@@ -140,22 +311,40 @@ const SketchWork = (p5) => {
       })
       tide.display(p5, water)
       p5.push()
-      p5.translate((p5.width / 7) * -1, (p5.width / 20) * -1)
-      p5.image(faucet, p5.width, p5.height / 4, p5.width / 6, p5.width / 8)
+      if (mobile) {
+        p5.translate((p5.width / 4) * -1, (p5.width / 4) * -1)
+        p5.image(faucet, p5.width, p5.height / 4, p5.width / 3, p5.width / 4)
+      } else {
+        p5.translate((p5.width / 7) * -1, (p5.width / 20) * -1)
+        p5.image(faucet, p5.width, p5.height / 4, p5.width / 6, p5.width / 8)
+      }
       p5.pop()
       if (water) {
         waterCount += 1
-        if (waterCount > waterTime) {
+        if (waterCount > waterTime && waterHeight.height < p5.height / 2 - 10) {
+          console.log(p5.height / 2)
           waterTime += p5.random(3, 5)
-          waterDrops.push(
-            new WaterDrop(
-              p5.random(2, 6),
-              255,
-              p5.width - p5.width / 7 + 10 + p5.random(-8, 8),
-              p5.height / 4 + p5.width / 8 - p5.width / 20,
-              waterHeight.height
+          if (mobile) {
+            waterDrops.push(
+              new WaterDrop(
+                p5.random(2, 6),
+                255,
+                p5.width * 0.75 + 10 + p5.random(-8, 8),
+                p5.height * 0.27,
+                waterHeight.height
+              )
             )
-          )
+          } else {
+            waterDrops.push(
+              new WaterDrop(
+                p5.random(2, 6),
+                255,
+                p5.width - p5.width / 7 + 10 + p5.random(-8, 8),
+                p5.height / 4 + p5.width / 8 - p5.width / 20,
+                waterHeight.height
+              )
+            )
+          }
         }
       }
       for (let i = 0; i < waterDrops.length; i++) {
@@ -199,12 +388,14 @@ const SketchWork = (p5) => {
     }
     if (windowController.hovering) {
       let projectName = windowController.hovering
+      console.log(projectName)
       windowController.selected = projectName
       currentWindow = new Window(
         projectName,
         p5,
         typewriterFont,
-        projectImages[projectName]
+        projectImages[projectName],
+        projectText[projectName]
       )
     }
     if (!windowController.hovering) {

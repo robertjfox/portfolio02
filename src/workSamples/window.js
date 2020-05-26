@@ -1,13 +1,14 @@
 // import { AboutText } from '../about/aboutText'
 
 export class Window {
-  constructor(projectName, p5, font, image) {
+  constructor(projectName, p5, font, image, text) {
     this.projectName = projectName.toLowerCase()
     this.x = p5.width * 0.62
     this.w = 0
     this.h = 0
     this.font = font
     this.image = image
+    this.text = text
   }
 
   display(p5) {
@@ -29,7 +30,7 @@ export class Window {
     p5.fill(46, 48, 71)
     p5.translate(p5.width * -0.125, 0)
     p5.text(
-      'FitMinded is a social media application that connects individuals with similar athletic interests.',
+      this.text,
       this.x,
       p5.height * 0.525,
       p5.width * 0.25,

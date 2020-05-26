@@ -20,14 +20,22 @@ export class AboutText {
 
   display(p5) {
     let projectName
+    let mobile = false
+    if (p5.width <= 600) {
+      mobile = true
+    }
 
     this.update(p5)
 
     p5.push()
 
-    p5.textFont(this.font)
+    if (!mobile) {
+      let difX = p5.map(p5.mouseX - this.x, 0, p5.width, 0, this.size)
+      let difY = p5.map(p5.mouseY - this.y, 0, p5.height, 0, this.size)
+      p5.translate(difX, difY)
+    }
 
-    p5.translate(p5.mouseX / (100 - this.size), p5.mouseY / (100 - this.size))
+    p5.textFont(this.font)
 
     if (this.hilightable) {
       projectName = this.str.split(' ')[2].toLowerCase()
@@ -64,14 +72,22 @@ export class AboutText {
         p5.textSize(this.size)
 
         if (this.hilighted) {
-          p5.fill(59, 186, 156, Math.max(255 - d / 2, 100))
+          if (mobile) {
+            p5.fill(59, 186, 156)
+          } else {
+            p5.fill(59, 186, 156, Math.max(255 - d / 2, 100))
+          }
         } else {
-          p5.fill(
-            this.color[0],
-            this.color[1],
-            this.color[2],
-            Math.max(255 - d / 2, 100)
-          )
+          if (mobile) {
+            p5.fill(this.color[0], this.color[1], this.color[2])
+          } else {
+            p5.fill(
+              this.color[0],
+              this.color[1],
+              this.color[2],
+              Math.max(255 - d / 2, 100)
+            )
+          }
         }
         p5.noStroke()
         p5.text(this.str[i], x, this.y)

@@ -1,3 +1,5 @@
+import { contactController } from './sketch'
+
 export class ContactText {
   constructor(str, x, y, size, color, font, time, hilightable) {
     this.x = x
@@ -30,6 +32,7 @@ export class ContactText {
 
         if (d < 15) {
           this.hovering = true
+          contactController.hovering = this.str
         }
 
         if (this.hovering) {
@@ -37,6 +40,9 @@ export class ContactText {
         } else {
           this.hilighted = false
         }
+      }
+      if (contactController.hovering === this.str && !this.hovering) {
+        contactController.hovering = false
       }
       this.hovering = false
     }
